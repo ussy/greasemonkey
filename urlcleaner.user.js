@@ -12,13 +12,13 @@ if (link && link.href == location.href) {
 const SITEINFO = [
   {
     domain: ".*",
-    lives: [],
-    kills: ["utm_source", "utm_medium", "utm_content", "utm_campaign"]
+    live: [],
+    kill: ["utm_source", "utm_medium", "utm_content", "utm_campaign"]
   },
   {
     domain: "http:\/\/(.+?)\.youtube\.com\/watch",
-    lives: ["v"],
-    kills: []
+    live: ["v"],
+    kill: []
   }
 ];
 
@@ -36,9 +36,9 @@ SITEINFO.forEach(function(site) {
       return;
     }
 
-    if (site.lives.indexOf(key) > -1) {
+    if (site.live.indexOf(key) > -1) {
       liveSearch += (key + (val ? "=" + val : "") + "&");
-    } else if (site.kills.indexOf(key) == -1) {
+    } else if (site.kill.indexOf(key) == -1) {
       search += (key + (val ? "=" + val : "") + "&");
     }
   });
