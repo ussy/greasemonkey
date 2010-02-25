@@ -1,9 +1,11 @@
 // ==UserScript==
 // @name           UrlCleaner
+// @description    URL から不要なパラメーターを削除し、リダイレクトします。
 // @namespace      http://github.com/ussy/
 // @include        http://*
 // @include        https://*
 // @require        http://gist.github.com/raw/34615/04333b7e307eb029462680e4f4cf961f72f4324c
+// @version        1.0.0
 // ==/UserScript==
 
 var DATABASE_URL = "http://wedata.net/databases/UrlCleaner/items.json";
@@ -18,7 +20,7 @@ if (link && link.href == location.href) {
 }
 
 const SITEINFO = [
-/*
+  /*
   {
     url: ".*",
     kill: ["utm_source", "utm_medium", "utm_content", "utm_campaign"]
@@ -66,6 +68,8 @@ function tryRedirect(data) {
     newUrl += ("?" + search.substring(0, search.length - 1));
   } else if (liveSearch.length > 0) {
     newUrl += ("?" + liveSearch.substring(0, liveSearch.length - 1));
+  } else {
+    newUrl = location.href;
   }
 
   if (newUrl != location.href) {
