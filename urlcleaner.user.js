@@ -23,11 +23,11 @@ const SITEINFO = [
   /*
   {
     url: ".*",
-    kill: ["utm_source", "utm_medium", "utm_content", "utm_campaign"]
+    kill: "utm_source utm_medium utm_content utm_campaign"
   },
   {
     url: "http:\/\/(.+?)\.youtube\.com\/watch",
-    live: ["v"]
+    live: "v"
   }
 */
 ];
@@ -57,9 +57,9 @@ function tryRedirect(data) {
       return;
     }
 
-    if (data.live && item.live.indexOf(key) > -1) {
+    if (data.live && item.live.split(" ").indexOf(key) > -1) {
       liveSearch += (key + (val ? "=" + val : "") + "&");
-    } else if (data.kill && data.kill.indexOf(key) == -1) {
+    } else if (data.kill && data.kill.split(" ").indexOf(key) == -1) {
       search += (key + (val ? "=" + val : "") + "&");
     }
   });
@@ -68,8 +68,6 @@ function tryRedirect(data) {
     newUrl += ("?" + search.substring(0, search.length - 1));
   } else if (liveSearch.length > 0) {
     newUrl += ("?" + liveSearch.substring(0, liveSearch.length - 1));
-  } else {
-    newUrl = location.href;
   }
 
   if (newUrl != location.href) {
