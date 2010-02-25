@@ -1,44 +1,63 @@
 // ==UserScript==
 // @name           UrlCleaner
 // @namespace      http://github.com/ussy/
-// @include        https?://*
+// @include        http://*
+// @include        https://*
+// @require        http://gist.github.com/raw/34615/04333b7e307eb029462680e4f4cf961f72f4324c
 // ==/UserScript==
 
-let link = document.querySelector("link[rel=canonical]");
+var DATABASE_URL = "http://wedata.net/databases/UrlCleaner/items.json";
+var database = new Wedata.Database(DATABASE_URL);
+GM_registerMenuCommand('UrlCleaner - clear cache', function() {
+  database.clearCache();
+});
+
+var link = document.querySelector("link[rel=canonical]");
 if (link && link.href == location.href) {
   return;
 }
 
 const SITEINFO = [
+/*
   {
-    domain: ".*",
-    live: [],
+    url: ".*",
     kill: ["utm_source", "utm_medium", "utm_content", "utm_campaign"]
   },
   {
-    domain: "http:\/\/(.+?)\.youtube\.com\/watch",
-    live: ["v"],
-    kill: []
+    url: "http:\/\/(.+?)\.youtube\.com\/watch",
+    live: ["v"]
   }
+*/
 ];
 
-SITEINFO.forEach(function(site) {
-  if (!(new RegExp(site.domain).test(location.href))) {
+SITEINFO.forEach(function(data) {
+  tryRedirect(data);
+});
+
+database.get(function(items) {
+  items.forEach(function(item) {
+    tryRedirect(item.data);
+  });
+});
+
+function tryRedirect(data) {
+  if (!(new RegExp(data.url).test(location.href))) {
     return;
   }
 
-  let newUrl = location.href.substring(0, location.href.length - location.search.length);
-  let liveSearch = "";
-  let search = "";
+  var newUrl = location.href.substring(0, location.href.length - location.search.length);
+  var liveSearch = "";
+  var search = "";
   location.search.substring(1).split("&").forEach(function(v) {
-    let [key, val] = v.split("=");
+    var kv = v.split("=");
+    var key = kv[0], val = kv[1];
     if (!key) {
       return;
     }
 
-    if (site.live.indexOf(key) > -1) {
+    if (data.live && item.live.indexOf(key) > -1) {
       liveSearch += (key + (val ? "=" + val : "") + "&");
-    } else if (site.kill.indexOf(key) == -1) {
+    } else if (data.kill && data.kill.indexOf(key) == -1) {
       search += (key + (val ? "=" + val : "") + "&");
     }
   });
@@ -52,4 +71,4 @@ SITEINFO.forEach(function(site) {
   if (newUrl != location.href) {
     location.href = newUrl;
   }
-});
+}
