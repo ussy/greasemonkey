@@ -22,7 +22,7 @@ if (link && link.href == location.href) {
 const SITEINFO = [
   /*
   {
-    url: ".*",
+    url: "^https?:\/\/.*utm.*",
     kill: "utm_source utm_medium utm_content utm_campaign"
   },
   {
@@ -57,7 +57,7 @@ function tryRedirect(data) {
       return;
     }
 
-    if (data.live && item.live.split(" ").indexOf(key) > -1) {
+    if (data.live && data.live.split(" ").indexOf(key) > -1) {
       liveSearch += (key + (val ? "=" + val : "") + "&");
     } else if (data.kill && data.kill.split(" ").indexOf(key) == -1) {
       search += (key + (val ? "=" + val : "") + "&");
