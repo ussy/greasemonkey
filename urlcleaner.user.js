@@ -5,6 +5,7 @@
 // @include        http://*
 // @include        https://*
 // @require        http://gist.github.com/raw/34615/04333b7e307eb029462680e4f4cf961f72f4324c
+// @author         Ussy
 // @version        1.0.0
 // ==/UserScript==
 
