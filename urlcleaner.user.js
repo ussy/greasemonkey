@@ -6,12 +6,12 @@
 // @include        https://*
 // @require        http://gist.github.com/raw/34615/04333b7e307eb029462680e4f4cf961f72f4324c
 // @author         Ussy
-// @version        1.0.0
+// @version        1.0.1
 // ==/UserScript==
 
 var DATABASE_URL = "http://wedata.net/databases/UrlCleaner/items.json";
 var database = new Wedata.Database(DATABASE_URL);
-GM_registerMenuCommand('UrlCleaner - clear cache', function() {
+GM_registerMenuCommand("UrlCleaner - clear cache", function() {
   database.clearCache();
 });
 
@@ -23,11 +23,11 @@ if (link && link.href == location.href) {
 const SITEINFO = [
   /*
   {
-    url: "^https?:\/\/.*utm.*",
-    kill: "utm_source utm_medium utm_content utm_campaign"
+    url: "^https?://[^?]+\\?.*\\butm_(?:c(?:ampaign|ontent)|medium|source|term)",
+    kill: "utm_campaign utm_content utm_medium utm_source utm_term"
   },
   {
-    url: "http:\/\/(.+?)\.youtube\.com\/watch",
+    url: "^http://(?:[^.]+\\.)?youtube\\.com/watch\\?",
     live: "v"
   }
 */
@@ -51,17 +51,18 @@ function tryRedirect(data) {
   var newUrl = location.href.substring(0, location.href.length - location.search.length);
   var liveSearch = "";
   var search = "";
-  location.search.substring(1).split("&").forEach(function(v) {
+  location.search.substring(1).split(/[&;]/).forEach(function(v) {
+    var delimiter = RegExp.lastMatch;
     var kv = v.split("=");
     var key = kv[0], val = kv[1];
     if (!key) {
       return;
     }
 
-    if (data.live && data.live.split(" ").indexOf(key) > -1) {
-      liveSearch += (key + (val ? "=" + val : "") + "&");
-    } else if (data.kill && data.kill.split(" ").indexOf(key) == -1) {
-      search += (key + (val ? "=" + val : "") + "&");
+    if (data.live && data.live.split(/\s+/).indexOf(key) > -1) {
+      liveSearch += (key + (val ? "=" + val : "") + delimiter);
+    } else if (data.kill && data.kill.split(/\s+/).indexOf(key) == -1) {
+      search += (key + (val ? "=" + val : "") + delimiter);
     }
   });
 
