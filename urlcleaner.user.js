@@ -6,7 +6,7 @@
 // @include        https://*
 // @require        http://gist.github.com/raw/34615/04333b7e307eb029462680e4f4cf961f72f4324c
 // @author         Ussy
-// @version        1.0.1
+// @version        1.0.2
 // ==/UserScript==
 
 var DATABASE_URL = "http://wedata.net/databases/UrlCleaner/items.json";
@@ -51,8 +51,9 @@ function tryRedirect(data) {
   var newUrl = location.href.substring(0, location.href.length - location.search.length);
   var liveSearch = "";
   var search = "";
-  location.search.substring(1).split(/[&;]/).forEach(function(v) {
-    var delimiter = RegExp.lastMatch;
+  var queries = location.search.substring(1).split(/[&;]/);
+  var delimiter = RegExp.lastMatch || "&";
+  queries.forEach(function(v) {
     var kv = v.split("=");
     var key = kv[0], val = kv[1];
     if (!key) {
