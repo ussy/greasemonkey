@@ -6,7 +6,7 @@
 // @include        https://*
 // @require        http://gist.github.com/raw/34615/04333b7e307eb029462680e4f4cf961f72f4324c
 // @author         Ussy
-// @version        1.0.2
+// @version        1.0.3
 // ==/UserScript==
 
 var DATABASE_URL = "http://wedata.net/databases/UrlCleaner/items.json";
@@ -32,16 +32,6 @@ const SITEINFO = [
   }
 */
 ];
-
-SITEINFO.forEach(function(data) {
-  tryRedirect(data);
-});
-
-database.get(function(items) {
-  items.forEach(function(item) {
-    tryRedirect(item.data);
-  });
-});
 
 function tryRedirect(data) {
   if (!(new RegExp(data.url).test(location.href))) {
@@ -77,3 +67,13 @@ function tryRedirect(data) {
     location.href = newUrl;
   }
 }
+
+SITEINFO.forEach(function(data) {
+  tryRedirect(data);
+});
+
+database.get(function(items) {
+  items.forEach(function(item) {
+    tryRedirect(item.data);
+  });
+});
