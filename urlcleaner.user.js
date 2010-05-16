@@ -2,8 +2,8 @@
 // @name           UrlCleaner
 // @description    URL から不要なパラメーターを削除し、リダイレクトします。
 // @namespace      http://github.com/ussy/
-// @include        http://*
-// @include        https://*
+// @include        http://*?*
+// @include        https://*?*
 // @require        http://gist.github.com/raw/34615/04333b7e307eb029462680e4f4cf961f72f4324c
 // @author         Ussy
 // @version        1.0.4
@@ -15,6 +15,9 @@ GM_registerMenuCommand("UrlCleaner - clear cache", function() {
   database.clearCache();
 });
 
+//if (!location.search) {
+//  return;
+//}
 var link = document.querySelector("link[rel=canonical]");
 if (link && link.href == location.href) {
   return;
