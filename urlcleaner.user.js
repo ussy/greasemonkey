@@ -42,7 +42,7 @@ function tryRedirect(data) {
     return;
   }
 
-  var newUrl = location.href.substring(0, location.href.length - location.search.length);
+  var newUrl = location.href.replace(/\?.*/, "");
   var liveSearch = "";
   var search = "";
   var queries = location.search.substring(1).split(delimiter);
