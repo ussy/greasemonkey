@@ -47,16 +47,15 @@ function tryRedirect(data) {
   var search = "";
   var queries = location.search.substring(1).split(delimiter);
   queries.forEach(function(v) {
-    var kv = v.split("=");
-    var key = kv[0], val = kv[1];
+    var [key, ] = v.split("=", 2);
     if (!key) {
       return;
     }
 
     if (data.live && data.live.split(/\s+/).indexOf(key) > -1) {
-      liveSearch += (key + (val ? "=" + val : "") + delimiter);
+      liveSearch += v + delimiter;
     } else if (data.kill && data.kill.split(/\s+/).indexOf(key) == -1) {
-      search += (key + (val ? "=" + val : "") + delimiter);
+      search += v + delimiter;
     }
   });
 
