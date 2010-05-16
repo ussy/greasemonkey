@@ -3,10 +3,12 @@
 // @description    URL から不要なパラメーターを削除し、リダイレクトします。
 // @namespace      http://github.com/ussy/
 // @include        http://*?*
+// @include        http://*#*
 // @include        https://*?*
+// @include        https://*#*
 // @require        http://gist.github.com/raw/34615/04333b7e307eb029462680e4f4cf961f72f4324c
 // @author         Ussy
-// @version        1.0.4
+// @version        1.1.0
 // ==/UserScript==
 
 const DATABASE_URL = "http://wedata.net/databases/UrlCleaner/items.json";
@@ -15,7 +17,7 @@ GM_registerMenuCommand("UrlCleaner - clear cache", function() {
   database.clearCache();
 });
 
-//if (!location.search) {
+//if (!location.search && !location.hash) {
 //  return;
 //}
 var link = document.querySelector("link[rel=canonical]");
@@ -26,7 +28,7 @@ if (link && link.href == location.href) {
 const SITEINFO = [
   /*
   { // Google Analytics
-    url: "^https?://[^?]+\\?.*\\butm_(?:c(?:ampaign|ontent)|medium|source|term)\\b",
+    url: "^https?://[^?#]+[?#].*\\butm_(?:c(?:ampaign|ontent)|medium|source|term)\\b",
     kill: "utm_campaign utm_content utm_medium utm_source utm_term"
   },
   { // YouTube
@@ -36,37 +38,48 @@ const SITEINFO = [
   */
 ];
 
-var delimiter = /[&;]/.exec(location.search.substring(1)) || "&";
+var delimiter = /[&;]/.exec(location.search.substring(1) + location.hash.substring(1)) || "&";
 function tryRedirect(data) {
   if (!(new RegExp(data.url).test(location.href))) {
     return;
   }
 
-  var newUrl = location.href.replace(/\?.*/, "");
-  var liveSearch = "";
-  var search = "";
-  var queries = location.search.substring(1).split(delimiter);
-  queries.forEach(function(v) {
-    var [key, ] = v.split("=", 2);
-    if (!key) {
-      return;
-    }
+  var newURL = location.href.replace(/[?#].*/, "");
+  var rescues = typeof data.live == "string" && data.live.split(/\s+/);
+  var killers = typeof data.kill == "string" && data.kill.split(/\s+/);
+  var queries = [];
+  var fragments = [];
+  var newQuery = location.search.substring(1).split(delimiter).filter(function(v) filterByKeys(v, queries), "").join(delimiter);
+  var newFragment = location.hash.substring(1).split(delimiter).filter(function(v) filterByKeys(v, fragments), "").join(delimiter);
 
-    if (data.live && data.live.split(/\s+/).indexOf(key) > -1) {
-      liveSearch += v + delimiter;
-    } else if (data.kill && data.kill.split(/\s+/).indexOf(key) == -1) {
-      search += v + delimiter;
-    }
-  });
-
-  if (liveSearch.length == 0 && search.length > 0) {
-    newUrl += ("?" + search.substring(0, search.length - 1));
-  } else if (liveSearch.length > 0) {
-    newUrl += ("?" + liveSearch.substring(0, liveSearch.length - 1));
+  if (queries.length == 0 && newQuery) {
+    newURL += "?" + newQuery;
+  } else if (queries.length > 0) {
+    newURL += "?" + queries.join(delimiter);
   }
 
-  if (newUrl != location.href) {
-    location.href = newUrl;
+  if (fragments.length == 0 && newFragment) {
+    newURL += "#" + newFragment;
+  } else if (fragments.length > 0) {
+    newURL += "#" + fragments.join(delimiter);
+  }
+
+  if (newURL != location.href) {
+    location.href = newURL;
+  }
+
+  function filterByKeys(v, survivors) {
+    var [key, ] = v.split("=", 2);
+    if (!key) {
+      return true;
+    }
+
+    if (rescues && rescues.indexOf(key) > -1) {
+      survivors.push(v);
+      return false;
+    }
+
+    return typeof killers.indexOf == "function" && killers.indexOf(key) == -1;
   }
 }
 
