@@ -9,7 +9,7 @@
 // @version        1.0.4
 // ==/UserScript==
 
-var DATABASE_URL = "http://wedata.net/databases/UrlCleaner/items.json";
+const DATABASE_URL = "http://wedata.net/databases/UrlCleaner/items.json";
 var database = new Wedata.Database(DATABASE_URL);
 GM_registerMenuCommand("UrlCleaner - clear cache", function() {
   database.clearCache();
@@ -25,15 +25,15 @@ if (link && link.href == location.href) {
 
 const SITEINFO = [
   /*
-  {
-    url: "^https?://[^?]+\\?.*\\butm_(?:c(?:ampaign|ontent)|medium|source|term)",
+  { // Google Analytics
+    url: "^https?://[^?]+\\?.*\\butm_(?:c(?:ampaign|ontent)|medium|source|term)\\b",
     kill: "utm_campaign utm_content utm_medium utm_source utm_term"
   },
-  {
-    url: "^http://(?:[^.]+\\.)?youtube\\.com/watch\\?",
+  { // YouTube
+    url: "^http://www\\.youtube\\.com/watch\\?",
     live: "v"
   }
-*/
+  */
 ];
 
 var delimiter = /[&;]/.exec(location.search.substring(1)) || "&";
@@ -71,9 +71,7 @@ function tryRedirect(data) {
   }
 }
 
-SITEINFO.forEach(function(data) {
-  tryRedirect(data);
-});
+SITEINFO.forEach(tryRedirect);
 
 database.get(function(items) {
   items.forEach(function(item) {
