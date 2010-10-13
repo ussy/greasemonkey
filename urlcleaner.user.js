@@ -8,8 +8,11 @@
 // @include        https://*#*
 // @require        http://gist.github.com/raw/34615/04333b7e307eb029462680e4f4cf961f72f4324c
 // @author         Ussy
-// @version        1.1.0
+// @version        1.1.1
 // ==/UserScript==
+if (window != window.parent) {
+  return;
+}
 
 const DATABASE_URL = "http://wedata.net/databases/UrlCleaner/items.json";
 var database = new Wedata.Database(DATABASE_URL);
@@ -17,9 +20,6 @@ GM_registerMenuCommand("UrlCleaner - clear cache", function() {
   database.clearCache();
 });
 
-//if (!location.search && !location.hash) {
-//  return;
-//}
 var link = document.querySelector("link[rel=canonical]");
 if (link && link.href == location.href) {
   return;
