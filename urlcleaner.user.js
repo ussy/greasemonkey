@@ -6,9 +6,9 @@
 // @include        http://*#*
 // @include        https://*?*
 // @include        https://*#*
-// @require        http://gist.github.com/raw/34615/04333b7e307eb029462680e4f4cf961f72f4324c
+// @require        https://gist.github.com/raw/34615/d818892d070ea57762e299765ecbc48efec90f0a/gistfile1.js
 // @author         Ussy
-// @version        1.1.1
+// @version        1.1.2
 // ==/UserScript==
 if (window != window.parent) {
   return;
