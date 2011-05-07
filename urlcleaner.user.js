@@ -8,7 +8,7 @@
 // @include        https://*#*
 // @require        https://gist.github.com/raw/34615/d818892d070ea57762e299765ecbc48efec90f0a/gistfile1.js
 // @author         Ussy
-// @version        1.1.3
+// @version        1.1.2
 // ==/UserScript==
 if (window != window.parent) {
   return;
@@ -41,7 +41,7 @@ const SITEINFO = [
 var delimiter = /[&;]/.exec(location.search.substring(1) + location.hash.substring(1)) || "&";
 function tryRedirect(data) {
   if (!(new RegExp(data.url).test(location.href))) {
-    return false;
+    return;
   }
 
   var newURL = location.href.replace(/[?#].*/, "");
@@ -81,18 +81,12 @@ function tryRedirect(data) {
 
     return typeof killers.indexOf == "function" && killers.indexOf(key) == -1;
   }
-
-  return true;
 }
 
-SITEINFO.forEach(function(item) {
-  var redirect = tryRedirect(item.data);
-  if (redirect) return;
-});
+SITEINFO.forEach(tryRedirect);
 
 database.get(function(items) {
   items.forEach(function(item) {
-    var redirect = tryRedirect(item.data);
-    if (redirect) return;
+    tryRedirect(item.data);
   });
 });
