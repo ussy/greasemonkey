@@ -99,8 +99,17 @@ function tryRedirect(data) {
 
 SITEINFO.forEach(tryRedirect);
 
+var isFetched = false;
 databases.forEach(function(database) {
+  if (isFetched) {
+    return;
+  }
+
   database.get(function(items) {
+    if (!isFetched) {
+      isFetched = true;
+    }
+
     items.forEach(function(item) {
       tryRedirect(item.data);
     });
