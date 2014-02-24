@@ -6,7 +6,7 @@
 // @include        http://*#*
 // @include        https://*?*
 // @include        https://*#*
-// @require        https://gist.github.com/raw/34615/d818892d070ea57762e299765ecbc48efec90f0a/gistfile1.js
+// @require        https://gist.githubusercontent.com/azu/434406/raw/3cd10875724c2d0fd4c3567a18c6087cc7161f8a/wedata.js
 // @author         Ussy
 // @grant          GM_registerMenuCommand
 // @grant          GM_xmlhttpRequest
