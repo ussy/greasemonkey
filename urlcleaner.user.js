@@ -14,10 +14,19 @@ if (window != window.parent) {
   return;
 }
 
-const DATABASE_URL = "http://wedata.net/databases/UrlCleaner/items.json";
-var database = new Wedata.Database(DATABASE_URL);
+const DATABASE_URLs = [
+  "http://wedata.net/databases/UrlCleaner/items.json",
+  "http://wedata.github.com/UrlCleaner/items.json",
+];
+var databases = [];
+DATABASE_URLs.forEach(function(url) {
+  databases.push(new Wedata.Database(url));
+});
+
 GM_registerMenuCommand("UrlCleaner - clear cache", function() {
-  database.clearCache();
+  databases.forEach(function(database) {
+    database.clearCache();
+  });
 });
 
 var link = document.querySelector("link[rel=canonical]");
@@ -85,8 +94,10 @@ function tryRedirect(data) {
 
 SITEINFO.forEach(tryRedirect);
 
-database.get(function(items) {
-  items.forEach(function(item) {
-    tryRedirect(item.data);
+databases.forEach(function(database) {
+  database.get(function(items) {
+    items.forEach(function(item) {
+      tryRedirect(item.data);
+    });
   });
 });
