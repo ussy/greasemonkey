@@ -16,7 +16,7 @@ if (window != window.parent) {
 
 const DATABASE_URLs = [
   "http://wedata.net/databases/UrlCleaner/items.json",
-  "http://wedata.github.com/UrlCleaner/items.json",
+  "http://wedata.github.io/UrlCleaner/items.json",
 ];
 var databases = [];
 DATABASE_URLs.forEach(function(url) {
