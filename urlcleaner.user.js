@@ -8,16 +8,25 @@
 // @include        https://*#*
 // @require        https://gist.github.com/raw/34615/d818892d070ea57762e299765ecbc48efec90f0a/gistfile1.js
 // @author         Ussy
-// @version        1.1.2
+// @version        2.0.0
 // ==/UserScript==
 if (window != window.parent) {
   return;
 }
 
-const DATABASE_URL = "http://wedata.net/databases/UrlCleaner/items.json";
-var database = new Wedata.Database(DATABASE_URL);
+const DATABASE_URLs = [
+  "http://wedata.net/databases/UrlCleaner/items.json",
+  "http://wedata.github.com/UrlCleaner/items.json",
+];
+var databases = [];
+DATABASE_URLs.forEach(function(url) {
+  databases.push(new Wedata.Database(url));
+});
+
 GM_registerMenuCommand("UrlCleaner - clear cache", function() {
-  database.clearCache();
+  databases.forEach(function(database) {
+    database.clearCache();
+  });
 });
 
 var link = document.querySelector("link[rel=canonical]");
@@ -51,6 +60,7 @@ function tryRedirect(data) {
   var fragments = [];
   var newQuery = location.search.substring(1).split(delimiter).filter(function(v) filterByKeys(v, queries), "").join(delimiter);
   var newFragment = location.hash.substring(1).split(delimiter).filter(function(v) filterByKeys(v, fragments), "").join(delimiter);
+  var hasHistoryAPI = history && history.replaceState && typeof history.replaceState === "function";
 
   if (queries.length == 0 && newQuery) {
     newURL += "?" + newQuery;
@@ -65,7 +75,11 @@ function tryRedirect(data) {
   }
 
   if (newURL != location.href) {
-    location.href = newURL;
+    if (hasHistoryAPI) {
+      history.replaceState(null, document.title, newURL);
+    } else {
+      location.href = newURL;
+    }
   }
 
   function filterByKeys(v, survivors) {
@@ -85,8 +99,19 @@ function tryRedirect(data) {
 
 SITEINFO.forEach(tryRedirect);
 
-database.get(function(items) {
-  items.forEach(function(item) {
-    tryRedirect(item.data);
+var isFetched = false;
+databases.forEach(function(database) {
+  if (isFetched) {
+    return;
+  }
+
+  database.get(function(items) {
+    if (!isFetched) {
+      isFetched = true;
+    }
+
+    items.forEach(function(item) {
+      tryRedirect(item.data);
+    });
   });
 });
