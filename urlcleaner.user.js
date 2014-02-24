@@ -8,6 +8,10 @@
 // @include        https://*#*
 // @require        https://gist.github.com/raw/34615/d818892d070ea57762e299765ecbc48efec90f0a/gistfile1.js
 // @author         Ussy
+// @grant          GM_registerMenuCommand
+// @grant          GM_xmlhttpRequest
+// @grant          GM_setValue
+// @grant          GM_getValue
 // @version        2.0.0
 // ==/UserScript==
 if (window != window.parent) {
