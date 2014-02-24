@@ -60,6 +60,7 @@ function tryRedirect(data) {
   var fragments = [];
   var newQuery = location.search.substring(1).split(delimiter).filter(function(v) filterByKeys(v, queries), "").join(delimiter);
   var newFragment = location.hash.substring(1).split(delimiter).filter(function(v) filterByKeys(v, fragments), "").join(delimiter);
+  var hasHistoryAPI = history && history.replaceState && typeof history.replaceState === "function";
 
   if (queries.length == 0 && newQuery) {
     newURL += "?" + newQuery;
@@ -74,7 +75,11 @@ function tryRedirect(data) {
   }
 
   if (newURL != location.href) {
-    location.href = newURL;
+    if (hasHistoryAPI) {
+      history.replaceState(null, document.title, newURL);
+    } else {
+      location.href = newURL;
+    }
   }
 
   function filterByKeys(v, survivors) {
