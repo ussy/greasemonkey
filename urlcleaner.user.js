@@ -12,7 +12,7 @@
 // @grant          GM_xmlhttpRequest
 // @grant          GM_setValue
 // @grant          GM_getValue
-// @version        2.0.0
+// @version        2.0.1
 // ==/UserScript==
 if (window != window.parent) {
   return;
