@@ -6,9 +6,13 @@
 // @include        http://*#*
 // @include        https://*?*
 // @include        https://*#*
-// @require        https://gist.github.com/raw/34615/d818892d070ea57762e299765ecbc48efec90f0a/gistfile1.js
+// @require        https://gist.githubusercontent.com/azu/434406/raw/3cd10875724c2d0fd4c3567a18c6087cc7161f8a/wedata.js
 // @author         Ussy
-// @version        2.0.0
+// @grant          GM_registerMenuCommand
+// @grant          GM_xmlhttpRequest
+// @grant          GM_setValue
+// @grant          GM_getValue
+// @version        2.0.1
 // ==/UserScript==
 if (window != window.parent) {
   return;
@@ -16,7 +20,7 @@ if (window != window.parent) {
 
 const DATABASE_URLs = [
   "http://wedata.net/databases/UrlCleaner/items.json",
-  "http://wedata.github.com/UrlCleaner/items.json",
+  "http://wedata.github.io/UrlCleaner/items.json",
 ];
 var databases = [];
 DATABASE_URLs.forEach(function(url) {
