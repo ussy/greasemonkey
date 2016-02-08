@@ -4,9 +4,11 @@
 // @description    キー移動時にエントリの URL をメッセージの中に表示します。
 // @grant          none
 // @include        http://reader.livedoor.com/reader/*
+// @include        http://reader.livedwango.com/reader/*
 // @include        http://reader.livedoor.com/public/*
+// @include        http://reader.livedwango.com/public/*
 // @include        http://fastladder.com/reader/*
-// @version        1.0.1
+// @version        1.1.0
 // ==/UserScript==
 
 (function() {
